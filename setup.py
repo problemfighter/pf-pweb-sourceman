@@ -34,7 +34,7 @@ setup(
     install_requires=get_dependencies(),
     entry_points={
         'console_scripts': [
-            'pweb-source=pf_pweb_sourceman.cli_main:bsw'
+            'pwebsm=pf_pweb_sourceman.cli_main:bsw'
         ],
     },
     classifiers=[
