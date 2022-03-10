@@ -10,11 +10,11 @@ def bsw():
 
 
 @click.command()
-def setup():
-    console.red('Setup Project')
-    click.echo(click.style('Hello World!', fg='green'))
-    click.echo(click.style('Some more text', bg='blue', fg='white'))
-    click.echo(click.style('ATTENTION', blink=True, bold=True))
+@click.option("--repo", "-r", help="Give Project Git Repository", required=True)
+@click.option("--mode", "-m", help="Enter Project Mode", default="dev", show_default=True, type=click.Choice(['dev', 'prod'], case_sensitive=False))
+def setup(repo, mode=None):
+    console.log(repo)
+    console.log(mode)
 
 
 bsw.add_command(setup)
