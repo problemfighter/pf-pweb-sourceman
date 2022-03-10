@@ -1,0 +1,2 @@
+def bsw():
+    print("Bismillah")
