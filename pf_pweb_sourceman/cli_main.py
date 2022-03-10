@@ -4,7 +4,9 @@ from pf_pweb_sourceman.common.console import console
 
 @click.group()
 def bsw():
+    console.blue("-------------------", bold=True)
     console.green("PWeb Source Manager", bold=True)
+    console.blue("-------------------", bold=True)
 
 
 @click.command()
