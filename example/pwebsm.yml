@@ -1,0 +1,26 @@
+
+before_start:
+  - npm install -g yarn
+
+dependencies:
+  - dir: "dev-dependencies"
+    setup-py: "develop"
+    git-multi-clone:
+      - branch: "dev"
+        mode:
+          - dev
+        repo:
+          - name: "xyz"
+            url: ""
+            branch: ""
+            script:
+              - x
+              - y
+    git-single-clone:
+      - branch: "dev"
+        repo: "git@xy.com:single-repo.git"
+        mode:
+          - dev
+
+before_end:
+  - yarn install

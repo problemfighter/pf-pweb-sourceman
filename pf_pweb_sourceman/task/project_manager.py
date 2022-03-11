@@ -1,13 +1,23 @@
 import os
 import subprocess
 import sys
+from git import Repo
 from pf_py_file.pfpf_file_util import PFPFFileUtil
 from pf_pweb_sourceman.common.console import console
 from pf_pweb_sourceman.common.pcli import pcli
 from pf_pweb_sourceman.common.constant import CONST
 
+from pf_py_ymlenv.yml_util import YMLUtil
+
 
 class ProjectManager:
+
+    def _log(self, text, log_type="message"):
+        message = ">> " + str(text)
+        if log_type == "error":
+            console.red(message)
+        else:
+            console.green(message)
 
     def get_python(self):
         return sys.executable
@@ -15,12 +25,51 @@ class ProjectManager:
     def active_venv(self, root):
         pass
 
+    def get_repo_name_from_url(self, url: str):
+        if not url:
+            return None
+
+        last_slash_index = url.rfind("/")
+        last_suffix_index = url.rfind(".git")
+        if last_suffix_index < 0:
+            last_suffix_index = len(url)
+
+        if last_slash_index < 0 or last_suffix_index <= last_slash_index:
+            raise Exception("Invalid repo url {}".format(url))
+
+        return url[last_slash_index + 1:last_suffix_index]
+
+    def clone_project(self, path, url, branch):
+        repo_name = self.get_repo_name_from_url(url)
+        if not repo_name:
+            raise Exception("Invalid repo")
+        self._log("Cloning project: " + repo_name + ", Branch: " + branch)
+        Repo.clone_from(url, branch=branch, to_path=path)
+
+    def _run_before_start(self, yml, root_path):
+        if "before_start" in yml:
+            for command in yml["before_start"]:
+                print(command)
+
+    def _run_before_end(self, yml, root_path):
+        if "before_end" in yml:
+            for command in yml["before_end"]:
+                print(command)
+
+    def process_pwebsm_file(self, root_path, mode):
+        yml_object = YMLUtil.load_from_file("D:\pfbl\guard-watch\dev-dependencies\pf-pweb-sourceman\example\pwebsm.yml")
+        self._run_before_start(yml_object, root_path)
+        self._run_before_end(yml_object, root_path)
+
     def setup(self, repo, directory, branch, mode):
         root_path = os.path.join(os.getcwd(), directory)
+
+        self.process_pwebsm_file(root_path, mode)
+
         if PFPFFileUtil.is_exist(root_path):
-            console.red("Path already exist. " + str(root_path))
+            self._log("Path already exist. " + str(root_path), "error")
             return
-        PFPFFileUtil.create_directories(root_path)
+        # PFPFFileUtil.create_directories(root_path)
 
         ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         print(sys.version)
@@ -34,7 +83,23 @@ class ProjectManager:
 
         cwd = os.getcwd()
         print(cwd)
+        self.clone_project(root_path, repo, branch)
         self.create_virtual_env(root_path)
+
+    def run_setup(self, root, run_type):
+        setup_file_name = "setup.py"
+        setup_file = os.path.join(root, setup_file_name)
+        if PFPFFileUtil.is_exist(setup_file):
+            command = "python " + setup_file_name + run_type
+            self.run_command_with_venv(root, command)
+
+    def run_command_with_venv(self, root, command):
+        active = "source " + os.path.join(CONST.VENV_DIR, "bin", "active")
+        if sys.platform == "win32":
+            active = os.path.join(CONST.VENV_DIR, "Scripts", "active")
+        command = active + " && " + command
+        pcli.run(command, root)
+
 
     def create_virtual_env(self, root):
         pcli.run(self.get_python() + " -m venv " + CONST.VENV_DIR, root)

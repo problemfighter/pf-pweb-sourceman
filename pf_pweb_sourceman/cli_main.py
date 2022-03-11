@@ -16,7 +16,10 @@ def bsw():
 @click.option("--branch", "-b", help="Enter project branch", default="dev", show_default=True)
 @click.option("--mode", "-m", help="Enter Project Mode", default="dev", show_default=True, type=click.Choice(['dev', 'prod'], case_sensitive=False))
 def setup(repo, directory, branch, mode):
-    pm.setup(repo, directory, branch, mode)
+    try:
+        pm.setup(repo, directory, branch, mode)
+    except Exception as e:
+        console.red(">> " + str(e))
     console.log(repo)
     console.log(directory)
     console.log(branch)
