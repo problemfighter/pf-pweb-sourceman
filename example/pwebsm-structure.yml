@@ -10,8 +10,12 @@ dependencies:
         mode:
           - dev
         repo:
-          - name: "pf-py-common"
-            url: "https://github.com/problemfighter/pf-py-common.git"
+          - name: "xyz"
+            url: ""
+            branch: ""
+            script:
+              - x
+              - y
 
 before_end:
   - yarn install

@@ -46,6 +46,11 @@ class ProjectManager:
         self._log("Cloning project: " + repo_name + ", Branch: " + branch)
         Repo.clone_from(url, branch=branch, to_path=path)
 
+    def _get_value(self, dict_data, key, default=None):
+        if key in dict_data:
+            return dict_data[key]
+        return default
+
     def _run_before_start(self, yml, root_path):
         if "before_start" in yml:
             for command in yml["before_start"]:
@@ -56,9 +61,48 @@ class ProjectManager:
             for command in yml["before_end"]:
                 print(command)
 
+    def _process_repo_clone(self, mode, repository):
+        repos = self._get_value(repository, "repo", [])
+        yml_mode = self._get_value(repository, "mode")
+        if not yml_mode or mode not in yml_mode:
+            self._log("There is no mode found", "error")
+            return
+
+        branch = self._get_value(repository, "branch")
+        if not branch:
+            raise Exception("Branch not found")
+
+        for repo in repos:
+            print(repo)
+
+    def _process_dependency(self, mode, dependency, main_root, project_root):
+        target_dir = main_root
+        if "dir" in dependency:
+            target_dir = os.path.join(target_dir, dependency["dir"])
+        setup_py = self._get_value(dependency, "setup-py")
+        git_clone = self._get_value(dependency, "git-clone")
+        if not git_clone:
+            return
+        for repository in git_clone:
+            self._process_repo_clone(mode, repository)
+
+        print(target_dir)
+
+    def _resolve_dependencies(self, yml_object, mode, main_root, project_root=None):
+        if not yml_object:
+            return
+
+        dependencies = []
+        if "dependencies" in yml_object:
+            dependencies = yml_object["dependencies"]
+
+        for dependency in dependencies:
+            self._process_dependency(mode, dependency, main_root, project_root)
+
     def process_pwebsm_file(self, root_path, mode):
         yml_object = YMLUtil.load_from_file("D:\pfbl\guard-watch\dev-dependencies\pf-pweb-sourceman\example\pwebsm.yml")
         self._run_before_start(yml_object, root_path)
+        self._resolve_dependencies(yml_object, mode, root_path)
         self._run_before_end(yml_object, root_path)
 
     def setup(self, repo, directory, branch, mode):
