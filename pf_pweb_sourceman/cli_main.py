@@ -12,7 +12,7 @@ def bsw():
 
 @click.command()
 @click.option("--repo", "-r", help="Give Project Git Repository", required=True)
-@click.option("--directory", "-d", help="Project directory name", default="pweb", show_default=True)
+@click.option("--directory", "-d", help="Project directory name", default=None, show_default=True)
 @click.option("--branch", "-b", help="Enter project branch", default="dev", show_default=True)
 @click.option("--mode", "-m", help="Enter Project Mode", default="dev", show_default=True, type=click.Choice(['dev', 'prod'], case_sensitive=False))
 def setup(repo, directory, branch, mode):

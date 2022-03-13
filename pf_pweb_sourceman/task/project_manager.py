@@ -11,43 +11,44 @@ from pf_py_ymlenv.yml_util import YMLUtil
 class ProjectManager:
     git_repo_man = GitRepoMan()
     pwebsm_file_name = "pwebsm.yml"
+    main_app_root = ""
 
     def get_python(self):
         return sys.executable
 
-    def run_setup(self, root, run_type):
+    def run_setup(self, root, run_type, mode):
         setup_file_name = "setup.py"
         setup_file = os.path.join(root, setup_file_name)
         if PFPFFileUtil.is_exist(setup_file):
-            command = "python " + setup_file_name + run_type
-            self.run_command_with_venv(root, command)
+            command = "python " + setup_file_name + " " + run_type
+            self.run_command_with_venv(root, command, mode)
 
     def _get_value(self, dict_data, key, default=None):
         if key in dict_data:
             return dict_data[key]
         return default
 
-    def _run_before_start(self, yml, root_path):
+    def _run_before_start(self, yml, root_path, mode):
         if "before_start" in yml:
             console.info("Running: Before start commands")
             for command in yml["before_start"]:
                 console.success(command)
-                self.run_command_with_venv(command=command, root=root_path)
+                self.run_command_with_venv(command=command, root=root_path, mode=mode)
 
-    def _run_before_end(self, yml, root_path):
+    def _run_before_end(self, yml, root_path, mode):
         if "before_end" in yml:
             console.info("Running: Before end commands")
             for command in yml["before_end"]:
                 console.success(command)
-                self.run_command_with_venv(command=command, root=root_path)
+                self.run_command_with_venv(command=command, root=root_path, mode=mode)
 
     def _process_repo_clone(self, repo, branch, lib_root):
         branch = self._get_value(repo, "branch", branch)
         self.git_repo_man.clone_or_pull_project(path=lib_root, url=repo['url'], branch=branch)
 
-    def _run_setup_py(self, lib_root, setup_py):
+    def _run_setup_py(self, lib_root, setup_py, mode):
         if setup_py:
-            self.run_setup(lib_root, setup_py)
+            self.run_setup(lib_root, setup_py, mode)
 
     def _resolve_lib_dependency(self, main_app_root, mode, lib_root):
         pwebsm_yml_file = os.path.join(lib_root, self.pwebsm_file_name)
@@ -75,9 +76,9 @@ class ProjectManager:
             if "name" not in repo or "url" not in repo:
                 console.error("Invalid repo config")
                 continue
-            lib_root = os.path.join(repo['name'], project_root)
+            lib_root = os.path.join(project_root, repo['name'])
             self._process_repo_clone(repo, branch, lib_root)
-            self._run_setup_py(lib_root, setup_py)
+            self._run_setup_py(lib_root, setup_py, mode)
             self._resolve_lib_dependency(main_app_root=main_app_root, lib_root=lib_root, mode=mode)
 
     def _resolve_dependencies(self, yml_object, mode, main_root):
@@ -98,11 +99,13 @@ class ProjectManager:
             console.error(self.pwebsm_file_name + " file not found!")
             return
         yml_object = YMLUtil.load_from_file(pwebsm_yml_file)
-        self._run_before_start(yml_object, root_path)
+        self._run_before_start(yml_object, root_path, mode)
         self._resolve_dependencies(yml_object, mode, root_path)
-        self._run_before_end(yml_object, root_path)
+        self._run_before_end(yml_object, root_path, mode)
 
     def setup(self, repo, directory, branch, mode):
+        if not directory:
+            directory = self.git_repo_man.get_repo_name_from_url(repo)
         root_path = os.path.join(os.getcwd(), directory)
         if PFPFFileUtil.is_exist(root_path):
             console.error("Path already exist. " + str(root_path))
@@ -116,18 +119,23 @@ class ProjectManager:
     def _setup_or_update(self, root_path, repo, branch, mode):
         if repo and branch:
             self.git_repo_man.clone_or_pull_project(root_path, repo, branch)
+        self.main_app_root = root_path
         self.create_virtual_env(root_path)
         self.process_pwebsm_file(root_path, mode)
+        console.success("Process completed")
 
-    def run_command_with_venv(self, root, command):
-        active = "source " + os.path.join(CONST.VENV_DIR, "bin", "active")
+    def run_command_with_venv(self, root, command, mode):
+        active = "source " + os.path.join(self.main_app_root, CONST.VENV_DIR, "bin", "activate")
+        export = "export source='" + mode + "'"
         if sys.platform == "win32":
-            active = os.path.join(CONST.VENV_DIR, "Scripts", "active")
-        command = active + " && " + command
+            active = os.path.join(self.main_app_root, CONST.VENV_DIR, "Scripts", "activate")
+            export = "set source='" + mode + "'"
+        command = active + " && " + export + " && " + command
         pcli.run(command, root)
 
     def create_virtual_env(self, root):
-        if not PFPFFileUtil.is_exist(root):
+        if not PFPFFileUtil.is_exist(os.path.join(root, CONST.VENV_DIR)):
+            console.success("Creating virtual environment")
             pcli.run(self.get_python() + " -m venv " + CONST.VENV_DIR, root)
 
 
