@@ -1,5 +1,4 @@
 import os
-import subprocess
 import sys
 from pf_pweb_sourceman.task.git_repo_man import GitRepoMan
 from pf_py_file.pfpf_file_util import PFPFFileUtil
@@ -12,13 +11,6 @@ from pf_py_ymlenv.yml_util import YMLUtil
 class ProjectManager:
     git_repo_man = GitRepoMan()
     pwebsm_file_name = "pwebsm.yml"
-
-    def _log(self, text, log_type="message"):
-        message = ">> " + str(text)
-        if log_type == "error":
-            console.red(message)
-        else:
-            console.green(message)
 
     def get_python(self):
         return sys.executable
@@ -37,13 +29,17 @@ class ProjectManager:
 
     def _run_before_start(self, yml, root_path):
         if "before_start" in yml:
+            console.info("Running: Before start commands")
             for command in yml["before_start"]:
-                print(command)
+                console.success(command)
+                self.run_command_with_venv(command=command, root=root_path)
 
     def _run_before_end(self, yml, root_path):
         if "before_end" in yml:
+            console.info("Running: Before end commands")
             for command in yml["before_end"]:
-                print(command)
+                console.success(command)
+                self.run_command_with_venv(command=command, root=root_path)
 
     def _process_repo_clone(self, repo, branch, lib_root):
         branch = self._get_value(repo, "branch", branch)
