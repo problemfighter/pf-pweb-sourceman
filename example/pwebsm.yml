@@ -5,13 +5,12 @@ before_start:
 dependencies:
   - dir: "dev-dependencies"
     setup-py: "develop"
-    git-clone:
-      - branch: "dev"
-        mode:
-          - dev
-        repo:
-          - name: "pf-py-common"
-            url: "https://github.com/problemfighter/pf-py-common.git"
+    branch: "dev"
+    mode:
+      - dev
+    repo:
+      - name: "pf-py-common"
+        url: "https://github.com/problemfighter/pf-py-common.git"
 
 before_end:
   - yarn install

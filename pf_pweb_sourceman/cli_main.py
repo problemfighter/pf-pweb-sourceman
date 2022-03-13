@@ -19,11 +19,17 @@ def setup(repo, directory, branch, mode):
     try:
         pm.setup(repo, directory, branch, mode)
     except Exception as e:
-        console.red(">> " + str(e))
-    console.log(repo)
-    console.log(directory)
-    console.log(branch)
-    console.log(mode)
+        console.error(str(e))
+
+
+@click.command()
+@click.option("--mode", "-m", help="Enter Project Mode", default="dev", show_default=True, type=click.Choice(['dev', 'prod'], case_sensitive=False))
+def update(mode):
+    try:
+        pm.update(mode)
+    except Exception as e:
+        console.error(str(e))
 
 
 bsw.add_command(setup)
+bsw.add_command(update)
