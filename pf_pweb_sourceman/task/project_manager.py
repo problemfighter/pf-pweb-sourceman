@@ -129,7 +129,7 @@ class ProjectManager:
         export = "export source='" + mode + "'"
         if sys.platform == "win32":
             active = os.path.join(self.main_app_root, CONST.VENV_DIR, "Scripts", "activate")
-            export = "set source='" + mode + "'"
+            export = "set source=" + mode
         command = active + " && " + export + " && " + command
         pcli.run(command, root)
 
