@@ -78,8 +78,8 @@ class ProjectManager:
                 continue
             lib_root = os.path.join(project_root, repo['name'])
             self._process_repo_clone(repo, branch, lib_root)
-            self._run_setup_py(lib_root, setup_py, mode)
             self._resolve_lib_dependency(main_app_root=main_app_root, lib_root=lib_root, mode=mode)
+            self._run_setup_py(lib_root, setup_py, mode)
 
     def _resolve_dependencies(self, yml_object, mode, main_root):
         if not yml_object:
