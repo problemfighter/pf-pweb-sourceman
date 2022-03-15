@@ -73,10 +73,15 @@ class ProjectManager:
 
         repos = self._get_value(dependency, "repo", [])
         for repo in repos:
-            if "name" not in repo or "url" not in repo:
+            if "url" not in repo:
                 console.error("Invalid repo config")
                 continue
-            lib_root = os.path.join(project_root, repo['name'])
+
+            repo_name = self.git_repo_man.get_repo_name_from_url(repo['url'])
+            if "name" in repo:
+                repo_name = repo['name']
+
+            lib_root = os.path.join(project_root, repo_name)
             self._process_repo_clone(repo, branch, lib_root)
             self._resolve_lib_dependency(main_app_root=main_app_root, lib_root=lib_root, mode=mode)
             self._run_setup_py(lib_root, setup_py, mode)
