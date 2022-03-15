@@ -126,12 +126,10 @@ class ProjectManager:
 
     def run_command_with_venv(self, root, command, mode):
         active = "source " + os.path.join(self.main_app_root, CONST.VENV_DIR, "bin", "activate")
-        export = "export source='" + mode + "'"
         if sys.platform == "win32":
             active = os.path.join(self.main_app_root, CONST.VENV_DIR, "Scripts", "activate")
-            export = "set source=" + mode
-        command = active + " && " + export + " && " + command
-        pcli.run(command, root)
+        command = active + " && " + command
+        pcli.run(command, root, env=dict(os.environ, **{"source": mode}))
 
     def create_virtual_env(self, root):
         if not PFPFFileUtil.is_exist(os.path.join(root, CONST.VENV_DIR)):
