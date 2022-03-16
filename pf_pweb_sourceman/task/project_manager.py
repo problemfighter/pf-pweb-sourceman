@@ -97,6 +97,17 @@ class ProjectManager:
         for dependency in dependencies:
             self._process_dependency(mode, dependency, main_root)
 
+    def _resolve_app_dependencies(self, yml_object, mode, main_root):
+        if not yml_object:
+            return
+
+        dependencies = []
+        if "app_dependencies" in yml_object:
+            dependencies = yml_object["app_dependencies"]
+
+        for dependency in dependencies:
+            self._process_dependency(mode, dependency, main_root)
+
     def process_pwebsm_file(self, root_path, mode, pwebsm_yml_file=None):
         if not pwebsm_yml_file:
             pwebsm_yml_file = os.path.join(root_path, self.pwebsm_file_name)
