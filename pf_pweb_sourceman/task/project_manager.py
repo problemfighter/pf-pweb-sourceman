@@ -117,6 +117,7 @@ class ProjectManager:
         yml_object = YMLUtil.load_from_file(pwebsm_yml_file)
         self._run_before_start(yml_object, root_path, mode)
         self._resolve_dependencies(yml_object, mode, root_path)
+        self._resolve_app_dependencies(yml_object, mode, root_path)
         self._run_before_end(yml_object, root_path, mode)
 
     def setup(self, repo, directory, branch, mode):
