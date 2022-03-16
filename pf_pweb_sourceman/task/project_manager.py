@@ -67,7 +67,7 @@ class ProjectManager:
             project_root = os.path.join(root_dir, directory)
             for command in py_script:
                 if command and command.startswith('setup.py'):
-                    run_type = command.replace("setup.py").strip()
+                    run_type = command.replace("setup.py", "").strip()
                     self.run_setup(project_root, run_type, mode=mode)
                 else:
                     self.run_py_command(project_root, command=command, mode=mode)
