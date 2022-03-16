@@ -16,6 +16,10 @@ class ProjectManager:
     def get_python(self):
         return sys.executable
 
+    def run_py_command(self, root, command, mode):
+        command = "python " + command
+        self.run_command_with_venv(root, command, mode)
+
     def run_setup(self, root, run_type, mode):
         setup_file_name = "setup.py"
         setup_file = os.path.join(root, setup_file_name)
@@ -55,6 +59,19 @@ class ProjectManager:
         if PFPFFileUtil.is_exist(pwebsm_yml_file):
             self.process_pwebsm_file(root_path=main_app_root, mode=mode, pwebsm_yml_file=pwebsm_yml_file)
 
+    def _run_py_script(self, py_script, root_dir, mode):
+        if not py_script or not root_dir or not PFPFFileUtil.is_exist(root_dir):
+            return
+        console.info("Resolving  App Dependencies")
+        for directory in os.listdir(root_dir):
+            project_root = os.path.join(root_dir, directory)
+            for command in py_script:
+                if command and command.startswith('setup.py'):
+                    run_type = command.replace("setup.py").strip()
+                    self.run_setup(project_root, run_type, mode=mode)
+                else:
+                    self.run_py_command(project_root, command=command, mode=mode)
+
     def _process_dependency(self, mode, dependency, main_app_root):
         project_root = main_app_root
         if "dir" in dependency:
@@ -70,6 +87,9 @@ class ProjectManager:
         if not branch:
             console.error("Branch not found")
             return
+
+        run_py_script = self._get_value(dependency, "run-py-script", [])
+        self._run_py_script(run_py_script, root_dir=project_root, mode=mode)
 
         repos = self._get_value(dependency, "repo", [])
         for repo in repos:
