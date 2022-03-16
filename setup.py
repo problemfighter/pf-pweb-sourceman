@@ -14,12 +14,12 @@ def get_dependencies():
     if env and env == "dev":
         return dependency
 
-    return dependency + ['PF-PY-YMLEnv']
+    return dependency + ['PF-PY-YMLEnv', 'PF-PY-File']
 
 
 setup(
     name='PF-PWeb-SourceMan',
-    version='1.0.0',
+    version='1.0.1',
     url='https://github.com/problemfighter/pf-pweb-sourceman',
     license='Apache 2.0',
     author='Problem Fighter',
