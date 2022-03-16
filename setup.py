@@ -19,7 +19,7 @@ def get_dependencies():
 
 setup(
     name='PF-PWeb-SourceMan',
-    version='1.0.1',
+    version='1.0.3',
     url='https://github.com/problemfighter/pf-pweb-sourceman',
     license='Apache 2.0',
     author='Problem Fighter',
