@@ -1,0 +1,16 @@
+
+before_start:
+  - npm install -g yarn
+
+dependencies:
+  - dir: "dev-dependencies"
+    setup-py: "develop"
+    branch: "dev"
+    mode:
+      - dev
+    repo:
+      - name: "pf-py-common"
+        url: "https://github.com/problemfighter/pf-py-common.git"
+
+before_end:
+  - yarn install
