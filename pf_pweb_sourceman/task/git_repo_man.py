@@ -30,5 +30,6 @@ class GitRepoMan:
             console.success(repo_name + " Taking pull...")
             repo = Repo(path)
             repo.git.checkout(branch)
-            origin = repo.remotes.origin
-            origin.pull()
+            repo.remotes.origin.fetch()
+            # origin = repo.remotes.origin
+            repo.git.pull()
