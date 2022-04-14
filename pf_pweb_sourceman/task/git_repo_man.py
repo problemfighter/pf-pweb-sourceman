@@ -31,5 +31,6 @@ class GitRepoMan:
             repo = Repo(path)
             repo.git.checkout(branch)
             repo.remotes.origin.fetch()
-            # origin = repo.remotes.origin
-            repo.git.pull()
+            origin = repo.remotes.origin
+            origin.pull()
+            # repo.git.pull()
