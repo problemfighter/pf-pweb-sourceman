@@ -29,8 +29,15 @@ class GitRepoMan:
         else:
             console.success(repo_name + " Taking pull...")
             repo = Repo(path)
-            repo.git.checkout(branch)
+
             repo.remotes.origin.fetch()
+            local_branch_name = repo.active_branch.name
+
+            console.red("----------------------------------------------------------------------------")
+            console.info("Local branch name : " + local_branch_name + ", Checkout branch: " + str(branch))
+            console.red("----------------------------------------------------------------------------")
+
+            if local_branch_name != branch:
+                repo.git.checkout(branch)
             origin = repo.remotes.origin
             origin.pull()
-            # repo.git.pull()
