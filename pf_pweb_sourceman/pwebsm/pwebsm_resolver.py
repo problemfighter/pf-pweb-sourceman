@@ -2,7 +2,7 @@ import os
 import sys
 from pf_pweb_sourceman.common.console import console
 from pf_pweb_sourceman.common.constant import CONST
-from pf_pweb_sourceman.common.descriptor_const import DesConst
+from pf_pweb_sourceman.pwebsm.descriptor_const import DesConst
 from pf_pweb_sourceman.common.pcli import pcli
 from pf_pweb_sourceman.task.git_repo_man import GitRepoMan
 from pf_py_file.pfpf_file_util import PFPFFileUtil
@@ -82,8 +82,8 @@ class PwebSMResolver:
             self.run_setup(lib_root, setup_py, mode)
 
     def _process_repo_clone(self, repo, branch, lib_root):
-        branch = self._get_value(repo, "branch", branch)
-        self.git_repo_man.clone_or_pull_project(path=lib_root, url=repo['url'], branch=branch)
+        branch = self._get_value(repo, DesConst.branch, branch)
+        self.git_repo_man.clone_or_pull_project(path=lib_root, url=repo[DesConst.url], branch=branch)
 
     def _resolve_lib_dependency(self, project_root, mode, lib_root, env=None):
         pwebsm_yml_file = self.get_pwebsm_file(project_root=lib_root, env=env)
@@ -92,32 +92,32 @@ class PwebSMResolver:
 
     def _process_dependency(self, mode, dependency, project_root, env=None):
         project_base_root = project_root
-        if "dir" in dependency:
-            project_root = os.path.join(project_root, dependency["dir"])
-        setup_py = self._get_value(dependency, "setup-py")
+        if DesConst.dir in dependency:
+            project_root = os.path.join(project_root, dependency[DesConst.dir])
+        setup_py = self._get_value(dependency, DesConst.setup_py)
 
-        yml_mode = self._get_value(dependency, "mode")
+        yml_mode = self._get_value(dependency, DesConst.mode)
         if not yml_mode or mode not in yml_mode:
             console.error("There is no mode found")
             return
 
-        branch = self._get_value(dependency, "branch")
+        branch = self._get_value(dependency, DesConst.branch)
         if not branch:
             console.error("Branch not found")
             return
 
-        run_py_script = self._get_value(dependency, "run-py-script", [])
+        run_py_script = self._get_value(dependency, DesConst.run_py_script, [])
         self._run_py_script(run_py_script, root_dir=project_root, mode=mode)
 
-        repos = self._get_value(dependency, "repo", [])
+        repos = self._get_value(dependency, DesConst.repo, [])
         for repo in repos:
-            if "url" not in repo:
+            if DesConst.url not in repo:
                 console.error("Invalid repo config")
                 continue
 
-            repo_name = self.git_repo_man.get_repo_name_from_url(repo['url'])
-            if "name" in repo:
-                repo_name = repo['name']
+            repo_name = self.git_repo_man.get_repo_name_from_url(repo[DesConst.url])
+            if DesConst.name in repo:
+                repo_name = repo[DesConst.name]
 
             lib_root = os.path.join(project_root, repo_name)
             self._process_repo_clone(repo, branch, lib_root)
