@@ -15,6 +15,15 @@ class Console:
     def red(self, text, bold=False):
         click.echo(click.style(text, fg='red', bold=bold))
 
+    def yellow(self, text, bold=False):
+        click.echo(click.style(text, fg='yellow', bold=bold))
+
+    def magenta(self, text, bold=False):
+        click.echo(click.style(text, fg='magenta', bold=bold))
+
+    def cyan(self, text, bold=False):
+        click.echo(click.style(text, fg='cyan', bold=bold))
+
     def get_message_format(self, text):
         message = ">> " + str(text)
         return message
