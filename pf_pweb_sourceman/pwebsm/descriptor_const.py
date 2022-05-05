@@ -1,3 +1,6 @@
+dev_dependency_dir = "dev-dependencies"
+
+
 class DesConst:
     before_start = "before_start"
     app_dependencies = "app_dependencies"
@@ -14,3 +17,8 @@ class DesConst:
     repo = "repo"
     name = "name"
     url = "url"
+
+    # Some Values
+    app_dependencies_dir = "application"
+    dev_dependencies_dir = dev_dependency_dir
+    ui_dependencies_dir = dev_dependency_dir + "/ui"

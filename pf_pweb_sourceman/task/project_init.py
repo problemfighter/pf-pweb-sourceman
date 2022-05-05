@@ -1,5 +1,4 @@
 import os
-
 from pf_pweb_sourceman.common.console import console
 from pf_pweb_sourceman.pwebsm.descriptor_const import DesConst
 from pf_pweb_sourceman.pwebsm.pwebsm_resolver import PwebSMResolver
@@ -22,6 +21,52 @@ class ProjectInit:
             DesConst.url: "https://github.com/problemfighter/pf-flask-web.git"
         }
 
+    def get_dependencies_conf(self, dir, branch="dev", mode=None, setup_py=None, repo=None):
+        if mode is None:
+            mode = ["dev"]
+        dependencies = {
+            DesConst.dir: dir,
+            DesConst.branch: branch,
+            DesConst.mode: mode,
+        }
+        if repo:
+            dependencies[DesConst.repo] = repo
+        if setup_py:
+            dependencies[DesConst.setup_py] = setup_py
+        return dependencies
+
+    def app_dependencies(self):
+        dependencies = self.get_dependencies_conf(
+            dir=DesConst.app_dependencies_dir,
+            setup_py="develop"
+        )
+        return dependencies
+
+    def source_py_dependencies(self, mode):
+        repo = []
+        if mode == "dev":
+            repo = [
+                self.get_pweb_source_dep()
+            ]
+        dependencies = self.get_dependencies_conf(
+            dir=DesConst.dev_dependencies_dir,
+            setup_py="develop",
+            repo=repo
+        )
+        return dependencies
+
+    def source_ui_dependencies(self, mode, ui_type):
+        repo = []
+        if mode == "dev" and ui_type == "react":
+            repo = [
+                self.get_pf_react_source_dep()
+            ]
+        dependencies = self.get_dependencies_conf(
+            dir=DesConst.ui_dependencies_dir,
+            repo=repo
+        )
+        return dependencies
+
     def get_before_start(self):
         return []
 
@@ -34,6 +79,11 @@ class ProjectInit:
         PFPFFileUtil.delete_file(pwebsm_file_path)
         pwebsm_yml = {
             DesConst.before_start: self.get_before_start(),
+            DesConst.app_dependencies: [self.app_dependencies()],
+            DesConst.dependencies: [
+                self.source_py_dependencies(mode),
+                self.source_ui_dependencies(mode, ui_type)
+            ],
             DesConst.before_end: self.get_before_end()
         }
 
@@ -47,7 +97,7 @@ class ProjectInit:
     def init(self, name, port, directory, mode, ui_type):
         console.success("Initializing Project, Name: " + name)
         if not directory:
-            directory = name
+            directory = name.lower()
         project_root = self.pwebsm_resolver.project_root_dir(directory)
 
         self.process_project_root(project_root)
@@ -56,6 +106,9 @@ class ProjectInit:
         self.create_pwebsm_yml(project_root, mode=mode, ui_type=ui_type)
 
         self.project_manager.create_virtual_env(project_root)
+
+        console.success("Resolving Dependencies")
+        self.pwebsm_resolver.init_resolver(mode=mode, project_root=project_root)
 
         console.success("Congratulations!! Project has been Initialized.")
         print("\n")
