@@ -1,7 +1,53 @@
+import os
+
+from pf_pweb_sourceman.pwebsm.descriptor_const import DesConst
+from pf_pweb_sourceman.pwebsm.pwebsm_resolver import PwebSMResolver
+from pf_py_file.pfpf_file_util import PFPFFileUtil
+from pf_py_ymlenv.yml_util import YMLUtil
+
+
 class ProjectInit:
 
+    pwebsm_resolver = PwebSMResolver()
+
+    def get_pf_react_source_dep(self):
+        return {DesConst.url: "https://github.com/problemfighter/pf-react.git"}
+
+    def get_pweb_source_dep(self):
+        return {
+            DesConst.name: "pf-flask-web",
+            DesConst.url: "https://github.com/problemfighter/pf-flask-web.git"
+        }
+
+    def get_before_start(self):
+        return []
+
+    def get_before_end(self):
+        return []
+
+    def create_pwebsm_yml(self, project_root, mode, ui_type):
+        pwebsm_file = self.pwebsm_resolver.get_pwebsm_file_name()
+        pwebsm_file_path = os.path.join(project_root, pwebsm_file)
+        PFPFFileUtil.delete_file(pwebsm_file_path)
+        pwebsm_yml = {
+            DesConst.before_start: self.get_before_start(),
+            DesConst.before_end: self.get_before_end()
+        }
+
+        YMLUtil.write_to_file(pwebsm_file_path, pwebsm_yml)
+
+    def process_project_root(self, project_root):
+        if PFPFFileUtil.is_exist(project_root):
+            raise Exception("{} Path already exist.".format(str(project_root)))
+        PFPFFileUtil.create_directories(project_root)
+
     def init(self, name, port, directory, mode, ui_type):
-        pass
+        if not directory:
+            directory = name
+        project_root = self.pwebsm_resolver.project_root_dir(directory)
+
+        self.process_project_root(project_root)
+        self.create_pwebsm_yml(project_root, mode=mode, ui_type=ui_type)
 
 
 pi = ProjectInit()

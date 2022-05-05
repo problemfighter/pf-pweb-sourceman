@@ -16,24 +16,28 @@ class PwebSMResolver:
     main_app_root = ""
 
     def project_root_dir(self, directory=None):
-        root_path = os.path.join(os.getcwd(), directory)
+        root_path = os.getcwd()
+        if directory:
+            root_path = os.path.join(root_path, directory)
         return root_path
+
+    def get_pwebsm_file_name(self, env=None):
+        env_postfix = ""
+        if env:
+            env_postfix = "-" + env
+        return self.pwebsm_file_name + env_postfix + self.pwebsm_file_extension
 
     def get_pwebsm_file(self, project_root=None, env=None, directory=None, pwebsm_yml_file=None):
 
         if not project_root:
             project_root = self.project_root_dir(directory)
 
-        env_postfix = ""
-        if env:
-            env_postfix = env + "-"
-
-        pwebsm_file = self.pwebsm_file_name + env_postfix + self.pwebsm_file_extension
+        pwebsm_file = self.get_pwebsm_file_name(env)
         if not pwebsm_yml_file:
             pwebsm_yml_file = os.path.join(project_root, pwebsm_file)
 
         if not PFPFFileUtil.is_exist(pwebsm_yml_file):
-            pwebsm_file = self.pwebsm_file_name + self.pwebsm_file_extension
+            pwebsm_file = self.get_pwebsm_file_name()
             pwebsm_yml_file = os.path.join(project_root, pwebsm_file)
 
         if not PFPFFileUtil.is_exist(pwebsm_yml_file):
