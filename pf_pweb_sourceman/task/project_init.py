@@ -1,7 +1,9 @@
 import os
 
+from pf_pweb_sourceman.common.console import console
 from pf_pweb_sourceman.pwebsm.descriptor_const import DesConst
 from pf_pweb_sourceman.pwebsm.pwebsm_resolver import PwebSMResolver
+from pf_pweb_sourceman.task.project_manager import ProjectManager
 from pf_py_file.pfpf_file_util import PFPFFileUtil
 from pf_py_ymlenv.yml_util import YMLUtil
 
@@ -9,6 +11,7 @@ from pf_py_ymlenv.yml_util import YMLUtil
 class ProjectInit:
 
     pwebsm_resolver = PwebSMResolver()
+    project_manager = ProjectManager()
 
     def get_pf_react_source_dep(self):
         return {DesConst.url: "https://github.com/problemfighter/pf-react.git"}
@@ -42,12 +45,23 @@ class ProjectInit:
         PFPFFileUtil.create_directories(project_root)
 
     def init(self, name, port, directory, mode, ui_type):
+        console.success("Initializing Project, Name: " + name)
         if not directory:
             directory = name
         project_root = self.pwebsm_resolver.project_root_dir(directory)
 
         self.process_project_root(project_root)
+
+        console.success("Creating Dependency Resolver")
         self.create_pwebsm_yml(project_root, mode=mode, ui_type=ui_type)
+
+        self.project_manager.create_virtual_env(project_root)
+
+        console.success("Congratulations!! Project has been Initialized.")
+        print("\n")
+        console.info("---------------------------------------------------------")
+        console.cyan("Go to project directory: " + directory)
+        console.cyan("Run Command: python pweb_cli.py")
 
 
 pi = ProjectInit()
