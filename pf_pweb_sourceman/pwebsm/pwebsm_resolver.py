@@ -91,6 +91,7 @@ class PwebSMResolver:
             self.process_pwebsm_file(project_root=project_root, mode=mode, pwebsm_yml_file=pwebsm_yml_file, env=env)
 
     def _process_dependency(self, mode, dependency, project_root, env=None):
+        project_base_root = project_root
         if "dir" in dependency:
             project_root = os.path.join(project_root, dependency["dir"])
         setup_py = self._get_value(dependency, "setup-py")
@@ -120,7 +121,7 @@ class PwebSMResolver:
 
             lib_root = os.path.join(project_root, repo_name)
             self._process_repo_clone(repo, branch, lib_root)
-            self._resolve_lib_dependency(project_root=project_root, lib_root=lib_root, mode=mode, env=env)
+            self._resolve_lib_dependency(project_root=project_base_root, lib_root=lib_root, mode=mode, env=env)
             self._run_setup_py(lib_root, setup_py, mode)
 
     def _run_before_start(self, yml, project_root, mode):
