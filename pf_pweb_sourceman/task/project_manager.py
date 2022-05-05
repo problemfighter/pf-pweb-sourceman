@@ -1,5 +1,7 @@
 import os
 import sys
+
+from pf_pweb_sourceman.common.descriptor_const import DesConst
 from pf_pweb_sourceman.task.git_repo_man import GitRepoMan
 from pf_py_file.pfpf_file_util import PFPFFileUtil
 from pf_pweb_sourceman.common.console import console
@@ -33,16 +35,16 @@ class ProjectManager:
         return default
 
     def _run_before_start(self, yml, root_path, mode):
-        if "before_start" in yml:
+        if DesConst.before_start in yml:
             console.info("Running: Before start commands")
-            for command in yml["before_start"]:
+            for command in yml[DesConst.before_start]:
                 console.success(command)
                 self.run_command_with_venv(command=command, root=root_path, mode=mode)
 
     def _run_before_end(self, yml, root_path, mode):
-        if "before_end" in yml:
+        if DesConst.before_end in yml:
             console.info("Running: Before end commands")
-            for command in yml["before_end"]:
+            for command in yml[DesConst.before_end]:
                 console.success(command)
                 self.run_command_with_venv(command=command, root=root_path, mode=mode)
 
@@ -111,8 +113,8 @@ class ProjectManager:
             return
 
         dependencies = []
-        if "dependencies" in yml_object:
-            dependencies = yml_object["dependencies"]
+        if DesConst.dependencies in yml_object:
+            dependencies = yml_object[DesConst.dependencies]
 
         for dependency in dependencies:
             self._process_dependency(mode, dependency, main_root)
@@ -122,8 +124,8 @@ class ProjectManager:
             return
 
         dependencies = []
-        if "app_dependencies" in yml_object:
-            dependencies = yml_object["app_dependencies"]
+        if DesConst.app_dependencies in yml_object:
+            dependencies = yml_object[DesConst.app_dependencies]
 
         for dependency in dependencies:
             self._process_dependency(mode, dependency, main_root)
