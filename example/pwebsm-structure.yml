@@ -2,6 +2,25 @@
 before_start:
   - npm install -g yarn
 
+app_dependencies:
+  - dir: "application"
+    setup-py: "develop"
+    branch: "dev"
+    run-py-script:
+      - setup.py develop
+    mode:
+      - dev
+
+pip_install:
+  - mode:
+      - all
+    packages:
+      - flask
+  - mode:
+      - prod
+    packages:
+      - PF-PY-File
+
 dependencies:
   - dir: "dev-dependencies"
     setup-py: "develop"
