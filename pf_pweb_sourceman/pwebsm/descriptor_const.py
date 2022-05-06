@@ -1,3 +1,16 @@
+class UIType:
+    react = "react"
+    ssr = "ssr"
+    api = "api"
+
+
+class AppMode:
+    dev = "dev"
+    prod = "prod"
+    all = "all"
+    binary = "binary"
+
+
 dev_dependency_dir = "dev-dependencies"
 
 
