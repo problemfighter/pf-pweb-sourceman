@@ -1,5 +1,6 @@
 import click
 from pf_pweb_sourceman.common.console import console
+from pf_pweb_sourceman.module.create_py_module import py_mod
 from pf_pweb_sourceman.pwebsm.descriptor_const import UIType, AppMode
 from pf_pweb_sourceman.task.project_init import pi
 from pf_pweb_sourceman.task.project_manager import pm
@@ -48,6 +49,21 @@ def init(name, port, directory, mode, ui_type):
         console.error(str(e))
 
 
+@click.command(name="create-pymod")
+@click.option("--name", "-n", help="Module name", default=None, show_default=True, required=True)
+@click.option("--url", "-u", help="Module repo url", default="#", show_default=True)
+@click.option("--license", "-l", help="Module license", default="PF License", show_default=True)
+@click.option("--author", "-a", help="Module author", default="PWeb", show_default=True)
+@click.option("--authemail", "-ae", help="Module author email", default="problemfighter.com@gmail.com", show_default=True)
+@click.option("--description", "-d", help="Module short description", default=None, show_default=True)
+def create_module(name, url, license, author, authemail, description):
+    try:
+        py_mod.init(name, url, license, author, authemail, description)
+    except Exception as e:
+        console.error(str(e))
+
+
 bsw.add_command(setup)
 bsw.add_command(update)
 bsw.add_command(init)
+bsw.add_command(create_module)
