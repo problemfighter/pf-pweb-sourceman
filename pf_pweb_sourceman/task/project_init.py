@@ -111,7 +111,7 @@ class ProjectInit:
         PFPFFileUtil.copy(source_file_dir, destination_file_dir)
 
     def process_pweb_files(self, project_root, name, port):
-        for file_name in [".gitignore", "readme.md"]:
+        for file_name in [".gitignore", "README.md"]:
             self.copy_file(PwebSMUtil.get_template_common_dir(), project_root, file_name)
 
         # Copy to ROOT
