@@ -14,7 +14,7 @@ def get_dependencies():
     if env and env == "dev":
         return dependency
 
-    return dependency + ['PF-PY-YMLEnv', 'PF-PY-File']
+    return dependency + ['PF-PY-YMLEnv', 'PF-PY-File', 'PF-PY-Text']
 
 
 setup(
