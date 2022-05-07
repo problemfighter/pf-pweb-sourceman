@@ -24,7 +24,7 @@ class CreateReactModule:
             raise Exception("Please run the command inside project root")
 
         if not PFPFFileUtil.is_exist(os.path.join(PwebSMUtil.get_module_app_dir(), module_name)):
-            raise Exception("Create the module {} first.".format(module_name))
+            raise Exception("Create the module named {} first.".format(module_name))
 
         if PFPFFileUtil.is_exist(self.get_module_ui_path(module_name)):
             raise Exception("Sorry {} module UI already exist!".format(module_name))
@@ -57,7 +57,7 @@ class CreateReactModule:
     def init(self, name, module_name):
         console.success("Creating module {} UI".format(module_name))
         self.validate_name(name)
-        self.check_module_availability(name)
+        self.check_module_availability(module_name)
         self.create_structure(name, module_name)
         console.success("UI Module has been created!")
 
