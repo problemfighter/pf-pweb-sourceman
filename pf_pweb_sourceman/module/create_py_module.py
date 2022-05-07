@@ -27,17 +27,23 @@ class CreatePyModule:
         init_file = "__init__.py"
         readme_file = "README.md"
         setup_file = "setup.py"
+        gitignore_file = ".gitignore"
         template_init_file = os.path.join(template_root, init_file)
 
         module_root = os.path.join(PwebSMUtil.get_module_app_dir(), name)
         PFPFFileUtil.create_directories(module_root)
         readme_source = os.path.join(template_root, readme_file)
         readme_dest = os.path.join(module_root, readme_file)
+
         setup_source = os.path.join(template_root, setup_file)
         setup_dest = os.path.join(module_root, setup_file)
 
+        gitignore_source = os.path.join(template_root, gitignore_file)
+        gitignore_dest = os.path.join(module_root, gitignore_file)
+
         PFPFFileUtil.copy(readme_source, readme_dest)
         PFPFFileUtil.copy(setup_source, setup_dest)
+        PFPFFileUtil.copy(gitignore_source, gitignore_dest)
 
         TextFileMan.find_replace_text_content(setup_dest, setup_info)
 
