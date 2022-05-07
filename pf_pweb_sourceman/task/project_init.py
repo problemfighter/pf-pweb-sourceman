@@ -42,8 +42,8 @@ class ProjectInit:
     def app_dependencies(self):
         dependencies = self.get_dependencies_conf(
             dir=DesConst.app_dependencies_dir,
-            setup_py="develop"
         )
+        dependencies["run-py-script"] = ["setup.py develop"]
         return dependencies
 
     def source_py_dependencies(self, mode):
