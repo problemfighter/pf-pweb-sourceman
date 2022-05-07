@@ -1,6 +1,7 @@
 import click
 from pf_pweb_sourceman.common.console import console
 from pf_pweb_sourceman.module.create_py_module import py_mod
+from pf_pweb_sourceman.module.create_react_module import react_mod
 from pf_pweb_sourceman.pwebsm.descriptor_const import UIType, AppMode
 from pf_pweb_sourceman.task.project_init import pi
 from pf_pweb_sourceman.task.project_manager import pm
@@ -63,7 +64,18 @@ def create_module(name, url, license, author, authemail, description):
         console.error(str(e))
 
 
+@click.command(name="create-react-mod")
+@click.option("--name", "-n", help="Enter UI module name", required=True, show_default=True)
+@click.option("--modname", "-mn", help="Enter module name", required=True, show_default=True)
+def create_react_module(name, modname):
+    try:
+        react_mod.init(name, modname)
+    except Exception as e:
+        console.error(str(e))
+
+
 bsw.add_command(setup)
 bsw.add_command(update)
 bsw.add_command(init)
 bsw.add_command(create_module)
+bsw.add_command(create_react_module)
