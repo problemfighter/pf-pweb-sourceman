@@ -15,7 +15,7 @@ class ProjectInit:
     project_manager = ProjectManager()
 
     def get_pf_react_source_dep(self):
-        return {DesConst.url: "https://github.com/problemfighter/pf-react.git"}
+        return {DesConst.url: "https://github.com/problemfighter/pf-react-bdash.git"}
 
     def get_pweb_source_dep(self):
         return {
