@@ -33,7 +33,7 @@ class PwebSMUtil:
 
     @staticmethod
     def get_template_react_dir():
-        return os.path.join(PwebSMUtil.get_template_pweb_mod_dir(), "react")
+        return os.path.join(PwebSMUtil.get_template_dir(), "react")
 
     @staticmethod
     def get_template_react_mod_dir():
