@@ -1,6 +1,7 @@
 import os
 
 from pf_pweb_sourceman.pwebsm.descriptor_const import DesConst
+from pf_py_file.pfpf_file_util import PFPFFileUtil
 from pf_py_text.pfpt_string_util import PFPTStringUtil
 
 
@@ -27,8 +28,12 @@ class PwebSMUtil:
         return os.path.join(PwebSMUtil.get_template_pweb_dir(), "module")
 
     @staticmethod
+    def get_template_pweb_mod_crud_dir():
+        return os.path.join(PwebSMUtil.get_template_pweb_mod_dir(), "crud")
+
+    @staticmethod
     def get_template_react_dir():
-        return os.path.join(PwebSMUtil.get_template_dir(), "react")
+        return os.path.join(PwebSMUtil.get_template_pweb_mod_dir(), "react")
 
     @staticmethod
     def get_template_react_mod_dir():
@@ -51,3 +56,9 @@ class PwebSMUtil:
         text = PFPTStringUtil.find_and_replace_with(name, "-", "_")
         text = PFPTStringUtil.replace_space_with(text)
         return text.lower()
+
+    @staticmethod
+    def validate_app_root():
+        if not PFPFFileUtil.is_exist(PwebSMUtil.get_module_app_dir()):
+            raise Exception("Please run the command inside project root")
+        return PwebSMUtil.get_module_app_dir()

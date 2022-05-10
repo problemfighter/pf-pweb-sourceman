@@ -1,4 +1,4 @@
 
 
-class __NAME__Service:
+class __CAMEL_NAME__Service:
     pass

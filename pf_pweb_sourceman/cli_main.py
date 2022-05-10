@@ -2,7 +2,8 @@ import click
 from pf_pweb_sourceman.common.console import console
 from pf_pweb_sourceman.module.create_py_module import py_mod
 from pf_pweb_sourceman.module.create_react_module import react_mod
-from pf_pweb_sourceman.pwebsm.descriptor_const import UIType, AppMode
+from pf_pweb_sourceman.module.module_crud import crud
+from pf_pweb_sourceman.pwebsm.descriptor_const import UIType, AppMode, CRUDAction, Boolean
 from pf_pweb_sourceman.task.project_init import pi
 from pf_pweb_sourceman.task.project_manager import pm
 
@@ -74,8 +75,60 @@ def create_react_module(name, modname):
         console.error(str(e))
 
 
+@click.command()
+@click.option("--name", "-n", help="Enter controller name", required=True, show_default=True)
+@click.option("--module", "-m", help="Enter module name", required=True, show_default=True)
+@click.option("--action", "-a", help="Enter action", required=True, show_default=True, default=CRUDAction.create, type=click.Choice([CRUDAction.create, CRUDAction.delete]))
+@click.option("--api", "-ap", help="Enter controller type", required=True, show_default=True, default=Boolean.yes, type=click.Choice([Boolean.yes, Boolean.no]))
+def controller(name, module, action, api):
+    try:
+        crud.controller(name, module, action, api)
+    except Exception as e:
+        console.error(str(e))
+
+
+@click.command()
+@click.option("--name", "-n", help="Enter DTO name", required=True, show_default=True)
+@click.option("--module", "-m", help="Enter module name", required=True, show_default=True)
+@click.option("--action", "-a", help="Enter action", required=True, show_default=True, default=CRUDAction.create, type=click.Choice([CRUDAction.create, CRUDAction.delete]))
+def dto(name, module, action):
+    try:
+        crud.dto(name, module, action)
+    except Exception as e:
+        console.error(str(e))
+
+
+@click.command()
+@click.option("--name", "-n", help="Enter model name", required=True, show_default=True)
+@click.option("--module", "-m", help="Enter module name", required=True, show_default=True)
+@click.option("--action", "-a", help="Enter action", required=True, show_default=True, default=CRUDAction.create, type=click.Choice([CRUDAction.create, CRUDAction.delete]))
+@click.option("--all", "-al", help="Enter all (controller, dto, service)", required=True, show_default=True, default=Boolean.no, type=click.Choice([Boolean.yes, Boolean.no]) )
+@click.option("--api", "-ap", help="Enter controller type", required=True, show_default=True, default=Boolean.yes, type=click.Choice([Boolean.yes, Boolean.no]))
+def model(name, module, action, all, api):
+    try:
+        crud.model(name, module, action, all, api)
+    except Exception as e:
+        console.error(str(e))
+
+
+@click.command()
+@click.option("--name", "-n", help="Enter service name", required=True, show_default=True)
+@click.option("--module", "-m", help="Enter module name", required=True, show_default=True)
+@click.option("--action", "-a", help="Enter action", required=True, show_default=True, default=CRUDAction.create, type=click.Choice([CRUDAction.create, CRUDAction.delete]))
+def service(name, module, action):
+    try:
+        crud.service(name, module, action)
+    except Exception as e:
+        console.error(str(e))
+
+
 bsw.add_command(setup)
 bsw.add_command(update)
 bsw.add_command(init)
 bsw.add_command(create_module)
 bsw.add_command(create_react_module)
+
+bsw.add_command(controller)
+bsw.add_command(model)
+bsw.add_command(dto)
+bsw.add_command(service)

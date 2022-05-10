@@ -1,3 +1,13 @@
+class CRUDAction:
+    create = "create"
+    delete = "delete"
+
+
+class Boolean:
+    yes = "yes"
+    no = "no"
+
+
 class UIType:
     react = "react"
     ssr = "ssr"
