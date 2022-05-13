@@ -15,7 +15,7 @@ class ModuleCRUD:
         console.success("Validating module {}".format(module_name))
         app_root = PwebSMUtil.validate_app_root()
         module_root = os.path.join(app_root, module_name)
-        module_package = os.path.join(module_root, module_name)
+        module_package = os.path.join(module_root, PFPTStringUtil.find_and_replace_with(module_name, "-", "_"))
         if not PFPFFileUtil.is_exist(module_root):
             raise Exception("Invalid module, please check your module name or create one.")
         return module_package
@@ -56,10 +56,11 @@ class ModuleCRUD:
     def controller(self, name, module, action, is_api):
         module_root = self._validate_module(module)
         controller_dir = os.path.join(module_root, "controller")
-        dst_file_name = self.get_file_name(name) + "_controller.py"
+        dst_file_name = self.get_file_name(name) + "_api_controller.py"
         template_name = "crud_api_controller.py"
         if is_api == Boolean.no:
             template_name = "crud_controller.py"
+            dst_file_name = self.get_file_name(name) + "_controller.py"
         if action == CRUDAction.create:
             self.create_file(name, controller_dir, template_name, dst_file_name)
         console.yellow("Successfully Controller created!")
