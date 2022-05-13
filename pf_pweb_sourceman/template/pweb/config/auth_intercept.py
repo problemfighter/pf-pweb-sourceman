@@ -24,7 +24,3 @@ class AuthInterceptOnAcl(AuthInterceptOnAclABC):
     def process(self, url_info: PFFRCRequestInfo, payload: dict = None, form_auth_data: FormAuthData = None, is_api: bool = False):
         pass
 
-
-class AuthCustomLogin(AuthCustomLoginABC):
-    def process(self, identifier: str, password: str, is_api: bool, operator_service) -> DefaultModel.OperatorModel:
-        pass
