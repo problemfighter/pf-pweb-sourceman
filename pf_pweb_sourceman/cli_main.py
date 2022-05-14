@@ -15,7 +15,7 @@ def bsw():
     console.blue("-------------------", bold=True)
 
 
-@click.command()
+@click.command(help="Setup PWeb Project from git repo")
 @click.option("--repo", "-r", help="Give Project Git Repository", required=True)
 @click.option("--directory", "-d", help="Project directory name", default=None, show_default=True)
 @click.option("--branch", "-b", help="Enter project branch", default="dev", show_default=True)
