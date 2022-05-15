@@ -28,7 +28,7 @@ def setup(repo, directory, branch, environment, mode):
         console.error(str(e))
 
 
-@click.command()
+@click.command(help="Download new changes and update the project")
 @click.option("--mode", "-m", help="Enter Project Mode", default=AppMode.dev, show_default=True, type=click.Choice([AppMode.dev, AppMode.prod], case_sensitive=False))
 @click.option("--environment", "-e", help="Enter project environment name", default=None, show_default=True)
 def update(mode, environment):
@@ -38,7 +38,7 @@ def update(mode, environment):
         console.error(str(e))
 
 
-@click.command()
+@click.command(help="Initialize project from scratch")
 @click.option("--name", "-n", help="Project name", default=None, show_default=True, required=True)
 @click.option("--port", "-p", help="Project run on the port", default=1212, show_default=True, type=int)
 @click.option("--directory", "-d", help="Project directory name", default=None, show_default=True)
@@ -51,7 +51,7 @@ def init(name, port, directory, mode, ui_type):
         console.error(str(e))
 
 
-@click.command(name="create-pymod")
+@click.command(name="create-pymod", help="Create PWeb Module")
 @click.option("--name", "-n", help="Module name", default=None, show_default=True, required=True)
 @click.option("--url", "-u", help="Module repo url", default="#", show_default=True)
 @click.option("--license", "-l", help="Module license", default="PF License", show_default=True)
@@ -65,7 +65,7 @@ def create_module(name, url, license, author, authemail, description):
         console.error(str(e))
 
 
-@click.command(name="create-react-mod")
+@click.command(name="create-react-mod", help="Create react module")
 @click.option("--name", "-n", help="Enter UI module name", required=True, show_default=True)
 @click.option("--modname", "-mn", help="Enter module name", required=True, show_default=True)
 def create_react_module(name, modname):
@@ -75,7 +75,7 @@ def create_react_module(name, modname):
         console.error(str(e))
 
 
-@click.command()
+@click.command(help="Manipulate controller, create, delete etc.")
 @click.option("--name", "-n", help="Enter controller name", required=True, show_default=True)
 @click.option("--module", "-m", help="Enter module name", required=True, show_default=True)
 @click.option("--action", "-a", help="Enter action", required=True, show_default=True, default=CRUDAction.create, type=click.Choice([CRUDAction.create, CRUDAction.delete]))
@@ -87,7 +87,7 @@ def controller(name, module, action, api):
         console.error(str(e))
 
 
-@click.command()
+@click.command(help="Manipulate DTO, create, delete etc.")
 @click.option("--name", "-n", help="Enter DTO name", required=True, show_default=True)
 @click.option("--module", "-m", help="Enter module name", required=True, show_default=True)
 @click.option("--action", "-a", help="Enter action", required=True, show_default=True, default=CRUDAction.create, type=click.Choice([CRUDAction.create, CRUDAction.delete]))
@@ -98,7 +98,7 @@ def dto(name, module, action):
         console.error(str(e))
 
 
-@click.command()
+@click.command(help="Manipulate model, create, delete etc. It can generate the whole set as well")
 @click.option("--name", "-n", help="Enter model name", required=True, show_default=True)
 @click.option("--module", "-m", help="Enter module name", required=True, show_default=True)
 @click.option("--action", "-a", help="Enter action", required=True, show_default=True, default=CRUDAction.create, type=click.Choice([CRUDAction.create, CRUDAction.delete]))
@@ -111,7 +111,7 @@ def model(name, module, action, all, api):
         console.error(str(e))
 
 
-@click.command()
+@click.command(help="Manipulate service, create, delete etc.")
 @click.option("--name", "-n", help="Enter service name", required=True, show_default=True)
 @click.option("--module", "-m", help="Enter module name", required=True, show_default=True)
 @click.option("--action", "-a", help="Enter action", required=True, show_default=True, default=CRUDAction.create, type=click.Choice([CRUDAction.create, CRUDAction.delete]))

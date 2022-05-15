@@ -48,6 +48,12 @@ class ModuleCRUD:
         if PFPFFileUtil.is_exist(dst):
             raise Exception("{} already exists!".format(dst_file))
         src = os.path.join(PwebSMUtil.get_template_pweb_mod_crud_dir(), src_file)
+
+        init_file = "__init__.py"
+        init_file_dst = os.path.join(dst_dir, init_file)
+        if not PFPFFileUtil.is_exist(init_file_dst):
+            PFPFFileUtil.copy(os.path.join(PwebSMUtil.get_template_pweb_mod_dir(), init_file), init_file_dst)
+
         PFPFFileUtil.copy(src, dst)
         fd_dict = self.get_find_replace_dict(name=name)
         TextFileMan.find_replace_text_content(dst, fd_dict)
