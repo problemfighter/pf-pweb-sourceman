@@ -1,3 +1,4 @@
+import glob
 import os
 import sys
 from pf_pweb_sourceman.common.console import console
@@ -52,10 +53,17 @@ class PwebSMResolver:
         command = active + " && " + command
         pcli.run(command, root, env=dict(os.environ, **{"source": mode}))
 
+    def is_there_egg_info_file(self, path):
+        files = glob.glob(os.path.join(path, "*.egg-info"))
+        for file in files:
+            console.yellow("Already Installed")
+            return True
+        return False
+
     def run_setup(self, root, run_type, mode):
         setup_file_name = "setup.py"
         setup_file = os.path.join(root, setup_file_name)
-        if PFPFFileUtil.is_exist(setup_file):
+        if PFPFFileUtil.is_exist(setup_file) and not self.is_there_egg_info_file(root):
             command = "python " + setup_file_name + " " + run_type
             self.run_command_with_venv(root, command, mode)
 
@@ -115,18 +123,21 @@ class PwebSMResolver:
 
         repos = self._get_value(dependency, DesConst.repo, [])
         for repo in repos:
-            if DesConst.url not in repo:
-                console.error("Invalid repo config")
-                continue
+            try:
+                if DesConst.url not in repo:
+                    console.error("Invalid repo config")
+                    continue
 
-            repo_name = self.git_repo_man.get_repo_name_from_url(repo[DesConst.url])
-            if DesConst.name in repo:
-                repo_name = repo[DesConst.name]
+                repo_name = self.git_repo_man.get_repo_name_from_url(repo[DesConst.url])
+                if DesConst.name in repo:
+                    repo_name = repo[DesConst.name]
 
-            lib_root = os.path.join(project_root, repo_name)
-            self._process_repo_clone(repo, branch, lib_root)
-            self._resolve_lib_dependency(project_root=project_base_root, lib_root=lib_root, mode=mode, env=env)
-            self._run_setup_py(lib_root, setup_py, mode)
+                lib_root = os.path.join(project_root, repo_name)
+                self._process_repo_clone(repo, branch, lib_root)
+                self._resolve_lib_dependency(project_root=project_base_root, lib_root=lib_root, mode=mode, env=env)
+                self._run_setup_py(lib_root, setup_py, mode)
+            except Exception as e:
+                console.error(str(e))
 
     def _run_before_start(self, yml, project_root, mode):
         if DesConst.before_start in yml:
