@@ -1,3 +1,4 @@
+import git
 from git import Repo
 from pf_pweb_sourceman.common.console import console
 from pf_py_file.pfpf_file_util import PFPFFileUtil
@@ -39,5 +40,7 @@ class GitRepoMan:
 
             if local_branch_name != branch:
                 repo.git.checkout(branch)
-            origin = repo.remotes.origin
-            origin.pull()
+            # origin = repo.remotes.origin
+            # origin.pull()
+            git_repo = git.Git(path)
+            git_repo.execute("git pull")
