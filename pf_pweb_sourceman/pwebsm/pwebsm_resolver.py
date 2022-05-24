@@ -123,7 +123,7 @@ class PwebSMResolver:
 
         repos = self._get_value(dependency, DesConst.repo, [])
         for repo in repos:
-            console.magenta("\nssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
+            console.yellow("\nSTART ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
             try:
                 if DesConst.url not in repo:
                     console.error("Invalid repo config")
@@ -139,7 +139,7 @@ class PwebSMResolver:
                 self._run_setup_py(lib_root, setup_py, mode)
             except Exception as e:
                 console.error(str(e))
-            console.magenta("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\n")
+            console.magenta("ENDED eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\n")
 
     def _run_before_start(self, yml, project_root, mode):
         if DesConst.before_start in yml:
