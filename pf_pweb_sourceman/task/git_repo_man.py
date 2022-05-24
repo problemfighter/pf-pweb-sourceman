@@ -34,13 +34,12 @@ class GitRepoMan:
             repo.remotes.origin.fetch()
             local_branch_name = repo.active_branch.name
 
-            console.green("----------------------------------------------------------------------------")
             console.info("Local branch name : " + local_branch_name + ", Checkout branch: " + str(branch))
-            console.green("----------------------------------------------------------------------------")
 
             if local_branch_name != branch:
                 repo.git.checkout(branch)
             # origin = repo.remotes.origin
             # origin.pull()
             git_repo = git.Git(path)
-            git_repo.execute("git pull")
+            response = git_repo.execute("git pull")
+            print(response)
