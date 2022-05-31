@@ -1,3 +1,11 @@
+class DeployerAction:
+    deploy = "deploy"
+
+
+class DeployerOS:
+    centos = "centos"
+
+
 class CRUDAction:
     create = "create"
     delete = "delete"

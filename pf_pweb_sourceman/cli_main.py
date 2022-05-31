@@ -3,7 +3,8 @@ from pf_pweb_sourceman.common.console import console
 from pf_pweb_sourceman.module.create_py_module import py_mod
 from pf_pweb_sourceman.module.create_react_module import react_mod
 from pf_pweb_sourceman.module.module_crud import crud
-from pf_pweb_sourceman.pwebsm.descriptor_const import UIType, AppMode, CRUDAction, Boolean
+from pf_pweb_sourceman.prod.pweb_deployer import pweb_deployer
+from pf_pweb_sourceman.pwebsm.descriptor_const import UIType, AppMode, CRUDAction, Boolean, DeployerAction, DeployerOS
 from pf_pweb_sourceman.task.project_init import pi
 from pf_pweb_sourceman.task.project_manager import pm
 
@@ -122,6 +123,18 @@ def service(name, module, action):
         console.error(str(e))
 
 
+@click.command(help="Deploy PWeb to server")
+@click.option("--name", "-n", help="Enter app name", required=True, show_default=True)
+@click.option("--domain", "-d", help="Enter domain or subdomain name", required=True, show_default=True)
+@click.option("--os", "-os", help="Enter os name", required=True, show_default=True, default=DeployerOS.centos, type=click.Choice([DeployerOS.centos]))
+@click.option("--action", "-a", help="Enter action", required=True, show_default=True, default=DeployerAction.deploy, type=click.Choice([DeployerAction.deploy]))
+def deployer(name, domain, os, action):
+    try:
+        pweb_deployer.deploy(name, domain, os, action)
+    except Exception as e:
+        console.error(str(e))
+
+
 bsw.add_command(setup)
 bsw.add_command(update)
 bsw.add_command(init)
@@ -132,3 +145,5 @@ bsw.add_command(controller)
 bsw.add_command(model)
 bsw.add_command(dto)
 bsw.add_command(service)
+
+bsw.add_command(deployer)

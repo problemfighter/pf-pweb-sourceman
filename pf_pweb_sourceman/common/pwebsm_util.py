@@ -20,6 +20,14 @@ class PwebSMUtil:
         return os.path.join(PwebSMUtil.get_template_dir(), "common")
 
     @staticmethod
+    def get_template_prod_dir():
+        return os.path.join(PwebSMUtil.get_template_dir(), "prod")
+
+    @staticmethod
+    def get_template_prod_centos_dir():
+        return os.path.join(PwebSMUtil.get_template_prod_dir(), "centos")
+
+    @staticmethod
     def get_template_pweb_dir():
         return os.path.join(PwebSMUtil.get_template_dir(), "pweb")
 
