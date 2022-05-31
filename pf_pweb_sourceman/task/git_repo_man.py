@@ -38,8 +38,5 @@ class GitRepoMan:
 
             if local_branch_name != branch:
                 repo.git.checkout(branch)
-            # origin = repo.remotes.origin
-            # origin.pull()
-            git_repo = git.Git(path)
-            response = git_repo.execute("git pull")
-            print(response)
+            origin = repo.remotes.origin
+            origin.pull()
