@@ -53,3 +53,5 @@ class DesConst:
     app_dependencies_dir = "application"
     dev_dependencies_dir = dev_dependency_dir
     ui_dependencies_dir = dev_dependency_dir + "/ui"
+    defaultBranch = "dev"
+    defaultMode = "dev"

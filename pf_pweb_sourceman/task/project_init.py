@@ -1,7 +1,8 @@
 import os
 from pf_pweb_sourceman.common.console import console
 from pf_pweb_sourceman.common.pwebsm_util import PwebSMUtil
-from pf_pweb_sourceman.pwebsm.descriptor_const import DesConst, AppMode, UIType
+from pf_pweb_sourceman.pwebsm.descriptor_const import DesConst, UIType
+from pf_pweb_sourceman.pwebsm.pwebsm_descriptor_creator import PWebSMDescriptorCreator
 from pf_pweb_sourceman.pwebsm.pwebsm_resolver import PwebSMResolver
 from pf_pweb_sourceman.task.project_manager import ProjectManager
 from pf_py_file.pfpf_file_util import PFPFFileUtil
@@ -13,60 +14,44 @@ class ProjectInit:
 
     pwebsm_resolver = PwebSMResolver()
     project_manager = ProjectManager()
-
-    def get_pf_react_source_dep(self):
-        return {DesConst.url: "https://github.com/problemfighter/pf-react-bdash.git"}
-
-    def get_pweb_source_dep(self):
-        return {
-            DesConst.name: "pf-flask-web",
-            DesConst.url: "https://github.com/problemfighter/pf-flask-web.git"
-        }
-
-    def get_dependencies_conf(self, dir, branch="dev", mode=None, setup_py=None, repo=None):
-        if mode is None:
-            mode = ["dev"]
-        dependencies = {
-            DesConst.dir: dir,
-            DesConst.branch: branch,
-            DesConst.mode: mode,
-        }
-        if setup_py:
-            dependencies[DesConst.setup_py] = setup_py
-
-        if repo:
-            dependencies[DesConst.repo] = repo
-
-        return dependencies
+    pwebsm_descriptor_creator = PWebSMDescriptorCreator()
 
     def app_dependencies(self):
-        dependencies = self.get_dependencies_conf(
-            dir=DesConst.app_dependencies_dir,
+        dependencies = self.pwebsm_descriptor_creator.create_dependency_dict(
+            dir_name=DesConst.app_dependencies_dir,
+            branch=DesConst.defaultBranch,
+            mode=[DesConst.defaultMode],
+            pyScript=["setup.py develop"]
         )
-        dependencies["run-py-script"] = ["setup.py develop"]
         return dependencies
 
-    def source_py_dependencies(self, mode):
-        repo = []
-        if mode == "dev":
-            repo = [
-                self.get_pweb_source_dep()
-            ]
-        dependencies = self.get_dependencies_conf(
-            dir=DesConst.dev_dependencies_dir,
-            setup_py="develop",
+    def pweb_dependencies(self, mode=DesConst.defaultMode):
+        repo: list = []
+        if mode == DesConst.defaultMode:
+            repo.append(self.pwebsm_descriptor_creator.create_repo(
+                url="https://github.com/problemfighter/pf-flask-web.git",
+                name="pf-flask-web"
+            ))
+        dependencies = self.pwebsm_descriptor_creator.create_dependency_dict(
+            dir_name=DesConst.dev_dependencies_dir,
+            branch=DesConst.defaultBranch,
+            mode=[mode],
+            setupPy="develop",
             repo=repo
         )
         return dependencies
 
-    def source_ui_dependencies(self, mode, ui_type):
-        repo = []
-        if mode == AppMode.dev and ui_type == UIType.react:
-            repo = [
-                self.get_pf_react_source_dep()
-            ]
-        dependencies = self.get_dependencies_conf(
-            dir=DesConst.ui_dependencies_dir,
+    def react_dependencies(self, mode, ui_type):
+        repo: list = []
+        if mode == DesConst.defaultMode and ui_type == UIType.react:
+            repo.append(self.pwebsm_descriptor_creator.create_repo(
+                url="https://github.com/problemfighter/pf-react-bdash.git"
+            ))
+
+        dependencies = self.pwebsm_descriptor_creator.create_dependency_dict(
+            dir_name=DesConst.ui_dependencies_dir,
+            branch=DesConst.defaultBranch,
+            mode=[mode],
             repo=repo
         )
         return dependencies
@@ -83,21 +68,24 @@ class ProjectInit:
             commands.append("yarn install")
         return commands
 
-    def create_pwebsm_yml(self, project_root, mode, ui_type):
-        pwebsm_file = self.pwebsm_resolver.get_pwebsm_file_name()
+    def create_pwebsm_yml_file(self, project_root, descriptor: dict, env=None):
+        pwebsm_file = self.pwebsm_resolver.get_pwebsm_file_name(env=env)
         pwebsm_file_path = os.path.join(project_root, pwebsm_file)
         PFPFFileUtil.delete_file(pwebsm_file_path)
-        pwebsm_yml = {
-            DesConst.before_start: self.get_before_start(),
-            DesConst.app_dependencies: [self.app_dependencies()],
-            DesConst.dependencies: [
-                self.source_py_dependencies(mode),
-                self.source_ui_dependencies(mode, ui_type)
-            ],
-            DesConst.before_end: self.get_before_end(ui_type)
-        }
+        console.success("Writing PWebSM Descriptor to file")
+        YMLUtil.write_to_file(pwebsm_file_path, descriptor)
 
-        YMLUtil.write_to_file(pwebsm_file_path, pwebsm_yml)
+    def create_pwebsm_yml(self, project_root, mode, ui_type):
+        before_start = self.get_before_start()
+        app_dependencies = [self.app_dependencies()]
+        dependencies = [
+            self.pweb_dependencies(mode),
+            self.react_dependencies(mode, ui_type)
+        ]
+        before_end = self.get_before_end(ui_type)
+        console.success("Preparing PWebSM Descriptor")
+        descriptor = self.pwebsm_descriptor_creator.create(dependencies, app_dependencies, before_start, before_end)
+        self.create_pwebsm_yml_file(project_root, descriptor)
 
     def process_project_root(self, project_root):
         if PFPFFileUtil.is_exist(project_root):
