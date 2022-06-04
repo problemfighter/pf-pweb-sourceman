@@ -1,5 +1,5 @@
 {
-  "name": "__APP_NAME__",
+  "name": "__PROJECT_APP_NAME__",
   "version": "0.0.1",
   "private": true,
   "workspaces": [

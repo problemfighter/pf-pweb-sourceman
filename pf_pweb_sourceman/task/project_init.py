@@ -7,6 +7,7 @@ from pf_pweb_sourceman.pwebsm.pwebsm_resolver import PwebSMResolver
 from pf_pweb_sourceman.task.project_manager import ProjectManager
 from pf_py_file.pfpf_file_util import PFPFFileUtil
 from pf_py_file.pfpf_text_file_man import TextFileMan
+from pf_py_text.pfpt_string_util import PFPTStringUtil
 from pf_py_ymlenv.yml_util import YMLUtil
 
 
@@ -128,7 +129,7 @@ class ProjectInit:
         app_config = os.path.join(application_dir, "config", "app_config.py")
         if PFPFFileUtil.is_exist(app_config):
             TextFileMan.find_replace_text_content(app_config, [
-                {"find": "__APP_NAME__", "replace": name},
+                {"find": "__APP_NAME__", "replace": PFPTStringUtil.human_readable(name)},
                 {"find": "__APP_PORT__", "replace": str(port)},
             ])
 
@@ -149,7 +150,8 @@ class ProjectInit:
         package_json = os.path.join(project_root, "package.json")
         if PFPFFileUtil.is_exist(package_json):
             TextFileMan.find_replace_text_content(package_json, [
-                {"find": "__APP_NAME__", "replace": name.lower()}
+                {"find": "__APP_NAME__", "replace": name.lower()},
+                {"find": "__PROJECT_APP_NAME__", "replace": name.lower() + "-app"}
             ])
 
     def init(self, name, port, directory, mode, ui_type):

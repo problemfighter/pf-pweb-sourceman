@@ -15,9 +15,3 @@ class Config:
     ENABLE_API_END_POINTS: bool = True
     SWAGGER_ENABLE_JWT_AUTH_GLOBAL: bool = True
 
-    # JWT Token validity
-    JWT_REFRESH_TOKEN_VALIDITY_MIN: int = (60 * 24)
-    JWT_ACCESS_TOKEN_VALIDITY_MIN: int = (60 * 24 * 2)
-
-    # Custom Operator System
-    ENABLE_DEFAULT_AUTH_MODEL: bool = False
