@@ -41,6 +41,7 @@ class DesConst:
 
     # INTERNAL
     dir = "dir"
+    key = "key"
     setup_py = "setup-py"
     branch = "branch"
     run_py_script = "run-py-script"

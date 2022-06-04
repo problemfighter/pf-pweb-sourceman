@@ -166,11 +166,16 @@ class PwebSMResolver:
                 console.success(command)
                 self.run_command_with_venv(command=command, root=root_path, mode=mode)
 
-    def process_pwebsm_file(self, mode, project_root, env=None, directory=None, pwebsm_yml_file=None):
+    def get_pwebsm_descriptor(self, project_root, env=None, directory=None, pwebsm_yml_file=None):
         pwebsm_yml_file = self.get_pwebsm_file(project_root, env=env, directory=directory, pwebsm_yml_file=pwebsm_yml_file)
         if not pwebsm_yml_file:
             return
-        yml_object = YMLUtil.load_from_file(pwebsm_yml_file)
+        return YMLUtil.load_from_file(pwebsm_yml_file)
+
+    def process_pwebsm_file(self, mode, project_root, env=None, directory=None, pwebsm_yml_file=None):
+        yml_object = self.get_pwebsm_descriptor(project_root, env=env, directory=directory, pwebsm_yml_file=pwebsm_yml_file)
+        if not yml_object:
+            return
         self._run_before_start(yml_object, project_root, mode)
         self._resolve_dependencies(yml_object, mode, project_root, DesConst.dependencies)
         self._resolve_dependencies(yml_object, mode, project_root, DesConst.app_dependencies)

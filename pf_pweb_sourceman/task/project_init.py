@@ -18,6 +18,7 @@ class ProjectInit:
 
     def app_dependencies(self):
         dependencies = self.pwebsm_descriptor_creator.create_dependency_dict(
+            key="App",
             dir_name=DesConst.app_dependencies_dir,
             branch=DesConst.defaultBranch,
             mode=[DesConst.defaultMode],
@@ -33,6 +34,7 @@ class ProjectInit:
                 name="pf-flask-web"
             ))
         dependencies = self.pwebsm_descriptor_creator.create_dependency_dict(
+            key="PWeb",
             dir_name=DesConst.dev_dependencies_dir,
             branch=DesConst.defaultBranch,
             mode=[mode],
@@ -49,6 +51,7 @@ class ProjectInit:
             ))
 
         dependencies = self.pwebsm_descriptor_creator.create_dependency_dict(
+            key="PWebUI",
             dir_name=DesConst.ui_dependencies_dir,
             branch=DesConst.defaultBranch,
             mode=[mode],
@@ -59,10 +62,14 @@ class ProjectInit:
     def get_before_start(self):
         return []
 
-    def get_before_end(self, ui_type):
+    def get_api_before_end(self):
         commands = [
             "python pweb_cli.py develop"
         ]
+        return commands
+
+    def get_ui_before_end(self, ui_type):
+        commands = []
         if ui_type == UIType.react:
             commands.append("npm install -g yarn")
             commands.append("yarn install")
@@ -82,7 +89,8 @@ class ProjectInit:
             self.pweb_dependencies(mode),
             self.react_dependencies(mode, ui_type)
         ]
-        before_end = self.get_before_end(ui_type)
+        before_end = self.get_ui_before_end(ui_type)
+        before_end = before_end + self.get_api_before_end()
         console.success("Preparing PWebSM Descriptor")
         descriptor = self.pwebsm_descriptor_creator.create(dependencies, app_dependencies, before_start, before_end)
         self.create_pwebsm_yml_file(project_root, descriptor)
@@ -92,9 +100,12 @@ class ProjectInit:
             raise Exception("{} Path already exist.".format(str(project_root)))
         PFPFFileUtil.create_directories(project_root)
 
-    def copy_file(self, source, destination, file_dir_name):
+    def copy_file(self, source, destination, file_dir_name, dst_file_name=None):
         source_file_dir = os.path.join(source, file_dir_name)
-        destination_file_dir = os.path.join(destination, file_dir_name)
+        _dst_file_name = file_dir_name
+        if dst_file_name:
+            _dst_file_name = dst_file_name
+        destination_file_dir = os.path.join(destination, _dst_file_name)
         PFPFFileUtil.delete(destination_file_dir)
         PFPFFileUtil.copy(source_file_dir, destination_file_dir)
 
@@ -106,6 +117,8 @@ class ProjectInit:
         for file_name in ["pweb_cli.py"]:
             self.copy_file(PwebSMUtil.get_template_pweb_dir(), project_root, file_name)
 
+        self.copy_file(PwebSMUtil.get_template_pweb_dir(), project_root, "project_setup.py", "setup.py")
+
         # Copy to Application
         application_dir = os.path.join(project_root, DesConst.app_dependencies_dir)
         PFPFFileUtil.create_directories(application_dir)
@@ -115,6 +128,13 @@ class ProjectInit:
         app_config = os.path.join(application_dir, "config", "app_config.py")
         if PFPFFileUtil.is_exist(app_config):
             TextFileMan.find_replace_text_content(app_config, [
+                {"find": "__APP_NAME__", "replace": name},
+                {"find": "__APP_PORT__", "replace": str(port)},
+            ])
+
+        root_setup_py = os.path.join(project_root, "setup.py")
+        if PFPFFileUtil.is_exist(root_setup_py):
+            TextFileMan.find_replace_text_content(root_setup_py, [
                 {"find": "__APP_NAME__", "replace": name},
                 {"find": "__APP_PORT__", "replace": str(port)},
             ])

@@ -1,0 +1,2 @@
+class LernaJSON:
+    pass
