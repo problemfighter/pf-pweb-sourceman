@@ -23,7 +23,6 @@ export default class __MODULE_NAME__Config {
     }
 
     private static privateUrlMappings(privateLayoutInfo: PFLayoutInfoData): PFLayoutInfoData {
-        privateLayoutInfo.addPageInstance(this.uiURL.index, IndexView);
         return privateLayoutInfo;
     }
 

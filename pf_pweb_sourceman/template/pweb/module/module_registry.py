@@ -3,6 +3,9 @@ from pf_flask_web.system12.pweb_interfaces import PWebAppRegistry
 
 class __MODULE_NAME__Registry(PWebAppRegistry):
 
+    def run_on_cli_init(self, pweb_app):
+        pass
+
     def run_on_start(self, pweb_app):
         pass
 
