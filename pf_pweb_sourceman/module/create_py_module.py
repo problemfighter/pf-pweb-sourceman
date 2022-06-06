@@ -22,7 +22,7 @@ class CreatePyModule:
         if PFPFFileUtil.is_exist(os.path.join(PwebSMUtil.get_module_app_dir(), name)):
             raise Exception("Sorry {} module already exist!".format(name))
 
-    def create_structure(self, name, setup_info: list):
+    def create_structure(self, name, setup_info: list, module_root=None):
         template_root = PwebSMUtil.get_template_pweb_mod_dir()
         init_file = "__init__.py"
         readme_file = "README.md"
@@ -30,7 +30,11 @@ class CreatePyModule:
         gitignore_file = ".gitignore"
         template_init_file = os.path.join(template_root, init_file)
 
-        module_root = os.path.join(PwebSMUtil.get_module_app_dir(), name)
+        if module_root:
+            module_root = os.path.join(module_root, name)
+        else:
+            module_root = os.path.join(PwebSMUtil.get_module_app_dir(), name)
+
         PFPFFileUtil.create_directories(module_root)
         readme_source = os.path.join(template_root, readme_file)
         readme_dest = os.path.join(module_root, readme_file)
@@ -72,14 +76,14 @@ class CreatePyModule:
             {"find": "__MODULE_NAME__", "replace": module_name}
         ])
 
-    def init(self, name, repo_url, license, author, author_email, description):
-        console.success("Creating module {}".format(name))
-        self.validate_name(name)
-        self.check_module_availability(name)
-
+    def create_module(self, name, repo_url, license, author, author_email, description, module_root=None):
         description_text = ""
         if description:
             description_text = description
+
+        if not repo_url:
+            repo_url = "#"
+
         setup_info = [
             {"find": "__MODULE_NAME__", "replace": name},
             {"find": "__REPOSITORY_URL__", "replace": str(repo_url)},
@@ -88,7 +92,13 @@ class CreatePyModule:
             {"find": "__AUTHOR_EMAIL__", "replace": str(author_email)},
             {"find": "__DESCRIPTION__", "replace": str(description_text)},
         ]
-        self.create_structure(name, setup_info)
+        self.create_structure(name, setup_info, module_root=module_root)
+
+    def init(self, name, repo_url, license, author, author_email, description):
+        console.success("Creating module {}".format(name))
+        self.validate_name(name)
+        self.check_module_availability(name)
+        self.create_module(name, repo_url, license, author, author_email, description)
         console.success("Module has been created!")
 
 

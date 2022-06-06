@@ -29,8 +29,11 @@ class CreateReactModule:
         if PFPFFileUtil.is_exist(self.get_module_ui_path(module_name)):
             raise Exception("Sorry {} module UI already exist!".format(module_name))
 
-    def create_structure(self, name, module_name):
-        ui_root = self.get_module_ui_path(module_name)
+    def create_structure(self, name, module_name, ui_root=None):
+        if ui_root:
+            ui_root = os.path.join(ui_root, "ui")
+        else:
+            ui_root = self.get_module_ui_path(module_name)
         PFPFFileUtil.create_directories(ui_root)
 
         dirs = ["app", "tdef", "package.json", "tsconfig.json"]
@@ -54,11 +57,14 @@ class CreateReactModule:
 
         PFPFFileUtil.rename(module_config, module_config_rename)
 
+    def create_module(self, name, module_name, root_path=None):
+        self.create_structure(name, module_name, root_path)
+
     def init(self, name, module_name):
         console.success("Creating module {} UI".format(module_name))
         self.validate_name(name)
         self.check_module_availability(module_name)
-        self.create_structure(name, module_name)
+        self.create_module(name, module_name)
         console.success("UI Module has been created!")
 
 
