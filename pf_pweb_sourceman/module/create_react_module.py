@@ -29,12 +29,15 @@ class CreateReactModule:
         if PFPFFileUtil.is_exist(self.get_module_ui_path(module_name)):
             raise Exception("Sorry {} module UI already exist!".format(module_name))
 
-    def create_structure(self, name, module_name, ui_root=None):
+    def create_structure(self, name, module_name, ui_root=None, version=None):
         if ui_root:
             ui_root = os.path.join(ui_root, "ui")
         else:
             ui_root = self.get_module_ui_path(module_name)
         PFPFFileUtil.create_directories(ui_root)
+
+        if not version:
+            version = "0.0.1"
 
         dirs = ["app", "tdef", "package.json", "tsconfig.json"]
         for dir_name in dirs:
@@ -48,7 +51,8 @@ class CreateReactModule:
         klass_name = PFPTStringUtil.underscore_to_camelcase(name, "-")
 
         TextFileMan.find_replace_text_content(package_json, [
-            {"find": "__MODULE_NAME__", "replace": name}
+            {"find": "__MODULE_NAME__", "replace": name},
+            {"find": "__VERSION__", "replace": version}
         ])
 
         TextFileMan.find_replace_text_content(module_config, [
@@ -57,8 +61,8 @@ class CreateReactModule:
 
         PFPFFileUtil.rename(module_config, module_config_rename)
 
-    def create_module(self, name, module_name, root_path=None):
-        self.create_structure(name, module_name, root_path)
+    def create_module(self, name, module_name, root_path=None, version=None):
+        self.create_structure(name, module_name, root_path, version)
 
     def init(self, name, module_name):
         console.success("Creating module {} UI".format(module_name))

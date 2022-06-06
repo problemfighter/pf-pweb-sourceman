@@ -76,13 +76,16 @@ class CreatePyModule:
             {"find": "__MODULE_NAME__", "replace": module_name}
         ])
 
-    def create_module(self, name, repo_url, license, author, author_email, description, module_root=None):
+    def create_module(self, name, repo_url, license, author, author_email, description, module_root=None, version=None):
         description_text = ""
         if description:
             description_text = description
 
         if not repo_url:
             repo_url = "#"
+
+        if not version:
+            version = "0.0.1"
 
         setup_info = [
             {"find": "__MODULE_NAME__", "replace": name},
@@ -91,6 +94,7 @@ class CreatePyModule:
             {"find": "__AUTHOR_NAME__", "replace": str(author)},
             {"find": "__AUTHOR_EMAIL__", "replace": str(author_email)},
             {"find": "__DESCRIPTION__", "replace": str(description_text)},
+            {"find": "__VERSION__", "replace": str(version)},
         ]
         self.create_structure(name, setup_info, module_root=module_root)
 

@@ -24,7 +24,7 @@ def get_dependencies():
 
 setup(
     name='__MODULE_NAME__',
-    version='1.0.0',
+    version='__VERSION__',
     url='__REPOSITORY_URL__',
     license='__LICENSE_NAME__',
     author='__AUTHOR_NAME__',
