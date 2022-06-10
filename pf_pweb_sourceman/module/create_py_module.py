@@ -30,10 +30,11 @@ class CreatePyModule:
         gitignore_file = ".gitignore"
         template_init_file = os.path.join(template_root, init_file)
 
+        module_root_dir_name = PFPTStringUtil.find_and_replace_with(name, "_", "-")
         if module_root:
-            module_root = os.path.join(module_root, name)
+            module_root = os.path.join(module_root, module_root_dir_name)
         else:
-            module_root = os.path.join(PwebSMUtil.get_module_app_dir(), name)
+            module_root = os.path.join(PwebSMUtil.get_module_app_dir(), module_root_dir_name)
 
         PFPFFileUtil.create_directories(module_root)
         readme_source = os.path.join(template_root, readme_file)
