@@ -4,6 +4,7 @@
   "private": true,
   "workspaces": [
     "dev-dependencies/ui/*",
+    "dev-dependencies/*/ui",
     "application/*/ui"
   ],
   "scripts": {

@@ -1,6 +1,7 @@
 {
   "packages": [
     "dev-dependencies/ui/*",
+    "dev-dependencies/*/ui",
     "application/*/ui"
   ],
   "version": "0.0.1"
