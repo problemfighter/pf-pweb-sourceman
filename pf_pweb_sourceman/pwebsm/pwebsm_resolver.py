@@ -145,8 +145,9 @@ class PwebSMResolver:
         if DesConst.before_start in yml:
             console.info("Running: Before start commands")
             for command in yml[DesConst.before_start]:
-                console.success(command)
-                self.run_command_with_venv(command=command, root=project_root, mode=mode)
+                if command:
+                    console.success(command)
+                    self.run_command_with_venv(command=command, root=project_root, mode=mode)
 
     def _resolve_dependencies(self, yml_object, mode, project_root, key, env=None):
         if not yml_object:
@@ -163,8 +164,9 @@ class PwebSMResolver:
         if DesConst.before_end in yml:
             console.info("Running: Before end commands")
             for command in yml[DesConst.before_end]:
-                console.success(command)
-                self.run_command_with_venv(command=command, root=root_path, mode=mode)
+                if command:
+                    console.success(command)
+                    self.run_command_with_venv(command=command, root=root_path, mode=mode)
 
     def get_pwebsm_descriptor(self, project_root, env=None, directory=None, pwebsm_yml_file=None):
         pwebsm_yml_file = self.get_pwebsm_file(project_root, env=env, directory=directory, pwebsm_yml_file=pwebsm_yml_file)
