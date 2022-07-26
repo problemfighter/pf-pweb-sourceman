@@ -15,7 +15,8 @@ class ProjectManager:
     def get_python(self):
         return sys.executable
 
-    def setup(self, repo, directory, branch, mode, env):
+    def setup(self, repo, directory, branch, mode, env, is_clean=False):
+        self.pwebsm_resolver.is_clean = is_clean
         if not directory:
             directory = self.git_repo_man.get_repo_name_from_url(repo)
         project_root = self.pwebsm_resolver.project_root_dir(directory=directory)
@@ -23,8 +24,9 @@ class ProjectManager:
             raise Exception("{} Path already exist.".format(str(project_root)))
         self._setup_or_update(root_path=project_root, repo=repo, branch=branch, mode=mode, env=env, directory=directory)
 
-    def update(self, mode, env):
+    def update(self, mode, env, is_clean=False):
         root_path = os.getcwd()
+        self.pwebsm_resolver.is_clean = is_clean
         self._setup_or_update(root_path=root_path, repo=None, branch=None, mode=mode, env=env)
 
     def _setup_or_update(self, root_path, repo, branch, mode, env, directory=None):

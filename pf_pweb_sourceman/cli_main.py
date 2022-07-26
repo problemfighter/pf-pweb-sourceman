@@ -32,9 +32,10 @@ def setup(repo, directory, branch, environment, mode):
 @click.command(help="Download new changes and update the project")
 @click.option("--mode", "-m", help="Enter Project Mode", default=AppMode.dev, show_default=True, type=click.Choice([AppMode.dev, AppMode.prod], case_sensitive=False))
 @click.option("--environment", "-e", help="Enter project environment name", default=None, show_default=True)
-def update(mode, environment):
+@click.option("--clean", "-c", help="Clean the project", default=False, show_default=True, is_flag=True)
+def update(mode, environment, clean):
     try:
-        pm.update(mode, environment)
+        pm.update(mode, environment, clean)
     except Exception as e:
         console.error(str(e))
 

@@ -6,7 +6,7 @@ from pf_pweb_sourceman.common.constant import CONST
 from pf_pweb_sourceman.pwebsm.descriptor_const import DesConst
 from pf_pweb_sourceman.common.pcli import pcli
 from pf_pweb_sourceman.task.git_repo_man import GitRepoMan
-from pf_py_file.pfpf_file_util import PFPFFileUtil
+from pf_py_file.pfpf_file_util import PFPFFileUtil, FileUtil
 from pf_py_ymlenv.yml_util import YMLUtil
 
 
@@ -15,6 +15,7 @@ class PwebSMResolver:
     pwebsm_file_extension = ".yml"
     git_repo_man = GitRepoMan()
     main_app_root = ""
+    is_clean = False
 
     def project_root_dir(self, directory=None):
         root_path = os.getcwd()
@@ -57,6 +58,9 @@ class PwebSMResolver:
         files = glob.glob(os.path.join(path, "*.egg-info"))
         for file in files:
             console.yellow("Already Installed")
+            if self.is_clean:
+                FileUtil.delete(file)
+                return False
             return True
         return False
 
