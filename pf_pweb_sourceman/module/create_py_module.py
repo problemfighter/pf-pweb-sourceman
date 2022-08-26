@@ -88,8 +88,11 @@ class CreatePyModule:
         if not version:
             version = "0.0.1"
 
+        system_name = PFPTStringUtil.find_and_replace_with(name, "_", "-")
+
         setup_info = [
             {"find": "__MODULE_NAME__", "replace": name},
+            {"find": "__MODULE_SYSTEM_NAME__", "replace": system_name},
             {"find": "__REPOSITORY_URL__", "replace": str(repo_url)},
             {"find": "__LICENSE_NAME__", "replace": str(license)},
             {"find": "__AUTHOR_NAME__", "replace": str(author)},

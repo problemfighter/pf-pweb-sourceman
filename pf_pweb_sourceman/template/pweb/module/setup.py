@@ -23,7 +23,7 @@ def get_dependencies():
 
 
 setup(
-    name='__MODULE_NAME__',
+    name='__MODULE_SYSTEM_NAME__',
     version='__VERSION__',
     url='__REPOSITORY_URL__',
     license='__LICENSE_NAME__',
